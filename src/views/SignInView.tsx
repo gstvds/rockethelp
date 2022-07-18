@@ -1,13 +1,25 @@
 import { Heading, Icon, useTheme, VStack } from "native-base";
 import { Envelope, Key } from 'phosphor-react-native';
+import { useForm } from "react-hook-form";
 
 import Logo from '../assets/logo_primary.svg';
 
 import { TextField } from "../components/TextField";
 import { Button } from '../components/Button';
 
+interface SignInTextFieldData {
+  email: string;
+  password: string;
+}
+
 export function SignInView() {
   const { colors } = useTheme();
+  const { handleSubmit, control } = useForm();
+
+  function handleSignIn({ email, password }: SignInTextFieldData) {
+    console.log({ email, password });
+  }
+
   return (
     <VStack flex={1} alignItems="center" bg="gray.600" px={8} pt={24}>
       <Logo />
@@ -16,19 +28,23 @@ export function SignInView() {
       </Heading>
 
       <TextField
+        control={control}
+        name="email"
         mb={4}
         placeholder="E-mail"
         keyboardType="email-address"
         InputLeftElement={<Icon as={<Envelope color={colors.gray[300]} />} ml={4} />}
       />
       <TextField
+        control={control}
+        name="password"
         mb={8}
         placeholder="Senha"
         type="password"
         InputLeftElement={<Icon as={<Key color={colors.gray[300]} />} ml={4} />}
       />
 
-      <Button title="Entrar" w="full" />
+      <Button title="Entrar" w="full" onPress={handleSubmit(handleSignIn)} />
     </VStack>
   );
 }
