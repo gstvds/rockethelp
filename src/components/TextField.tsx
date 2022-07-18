@@ -1,7 +1,5 @@
 import { Input, IInputProps } from "native-base";
 
-
-
 export function TextField({ ...rest }: IInputProps) {
   return (
     <Input
