@@ -8,7 +8,7 @@ import { Filter } from '../components/Filter';
 import { Order, OrderProps } from '../components/Order';
 import { Button } from '../components/Button';
 
-export function Home() {
+export function HomeView() {
   const { colors } = useTheme();
   const [selectedFilter, setSelectedFilter] = useState<'open' | 'closed'>('open');
   const [orders, setOrders] = useState<OrderProps[]>([

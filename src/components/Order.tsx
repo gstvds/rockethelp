@@ -1,6 +1,6 @@
-import { HStack, Text, Box, useTheme, VStack, Circle, Pressable, IPressableProps } from "native-base";
-import { CircleWavyCheck, ClockAfternoon, Hourglass } from "phosphor-react-native";
-import { useMemo } from "react";
+import { HStack, Text, Box, useTheme, VStack, Circle, Pressable, IPressableProps } from 'native-base';
+import { CircleWavyCheck, ClockAfternoon, Hourglass } from 'phosphor-react-native';
+import { useMemo } from 'react';
 
 export interface OrderProps {
   id: string;

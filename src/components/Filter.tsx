@@ -1,5 +1,5 @@
-import { Button, IButtonProps, Text, useTheme } from "native-base";
-import { useMemo } from "react";
+import { useMemo } from 'react';
+import { Button, IButtonProps, Text, useTheme } from 'native-base';
 
 interface FilterProps extends IButtonProps {
   title: string;
