@@ -1,13 +1,21 @@
 import { useState } from 'react';
-import { Heading, HStack, IconButton, Text, useTheme, VStack } from 'native-base';
-import { SignOut } from 'phosphor-react-native';
+import { Heading, HStack, IconButton, Text, useTheme, VStack, FlatList, Center } from 'native-base';
+import { ChatTeardropText, SignOut } from 'phosphor-react-native';
 
 import Logo from '../assets/logo_secondary.svg';
+
 import { Filter } from '../components/Filter';
+import { Order, OrderProps } from '../components/Order';
+import { Button } from '../components/Button';
 
 export function Home() {
   const { colors } = useTheme();
   const [selectedFilter, setSelectedFilter] = useState<'open' | 'closed'>('open');
+  const [orders, setOrders] = useState<OrderProps[]>([
+    { id: '123', patrimony: '9012312', when: new Date().toISOString(), status: 'open' },
+    { id: '321', patrimony: '9012312', when: new Date().toISOString(), status: 'closed' },
+    { id: '213', patrimony: '9012312', when: new Date().toISOString(), status: 'open' },
+  ]);
 
   function handleSelectOpenFilter() {
     setSelectedFilter('open');
@@ -70,6 +78,30 @@ export function Home() {
             onPress={handleSelectClosedFilter}
           />
         </HStack>
+
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          data={orders}
+          keyExtractor={(order) => order.id}
+          renderItem={({ item }) => (
+            <Order data={item} />
+          )}
+          ListEmptyComponent={() => (
+            <Center>
+              <ChatTeardropText color={colors.gray[300]} size={40} />
+              <Text
+                color="gray.300"
+                fontSize="xl"
+                mt={6}
+                textAlign="center"
+              >
+                Você não possui{'\n'}solicitações {selectedFilter === 'open' ? 'em andamento' : 'finalizadas'}
+              </Text>
+            </Center>
+          )}
+        />
+        <Button title="Nova solicitação" />
       </VStack>
     </VStack>
   );
