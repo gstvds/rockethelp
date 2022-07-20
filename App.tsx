@@ -7,6 +7,7 @@ import { CoreNavigator } from './src/navigation';
 
 import { theme } from './src/styles/theme';
 import { AuthProvider } from './src/hooks/useAuth';
+import { OrderProvider } from './src/hooks/useOrder';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -18,7 +19,9 @@ export default function App() {
     <NativeBaseProvider theme={theme}>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
       <AuthProvider>
-        {fontsLoaded ? <CoreNavigator /> : <Loading />}
+        <OrderProvider>
+          {fontsLoaded ? <CoreNavigator /> : <Loading />}
+        </OrderProvider>
       </AuthProvider>
     </NativeBaseProvider>
   );

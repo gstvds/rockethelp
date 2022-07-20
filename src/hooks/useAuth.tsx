@@ -19,11 +19,11 @@ interface LoginProps {
   password: string;
 }
 
-export function AuthProvider({ children }: AuthProviderProps) {
+export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
   const [user, setUser] = useState<null | FirebaseAuthTypes.User>(null);
   const [loading, setLoading] = useState(false);
 
-  async function login({ email, password }: LoginProps) {
+  async function login({ email, password }: LoginProps): Promise<void> {
     setLoading(true);
     try {
       const authenticatedUser = await auth().signInWithEmailAndPassword(email, password);
@@ -41,7 +41,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  async function logout() {
+  async function logout(): Promise<void> {
     setLoading(true);
     try {
       await auth().signOut();
@@ -68,6 +68,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   );
 }
 
-export function useAuth() {
+export function useAuth(): AuthContextProps {
   return useContext(AuthContext);
 }

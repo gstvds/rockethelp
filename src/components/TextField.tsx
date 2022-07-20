@@ -1,4 +1,4 @@
-import { Input, IInputProps, VStack, Text } from "native-base";
+import { Input, IInputProps, Text } from "native-base";
 import { Controller } from 'react-hook-form';
 
 interface TextFieldProps extends IInputProps {
@@ -11,7 +11,7 @@ interface TextFieldProps extends IInputProps {
 
 export function TextField({ control, name, error, ...rest }: TextFieldProps) {
   return (
-    <VStack>
+    <>
       <Controller
         control={control}
         name={name}
@@ -46,6 +46,6 @@ export function TextField({ control, name, error, ...rest }: TextFieldProps) {
           {error}
         </Text>
       )}
-    </VStack>
+    </>
   )
 }

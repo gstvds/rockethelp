@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Heading, HStack, IconButton, Text, useTheme, VStack, FlatList, Center } from 'native-base';
 import { ChatTeardropText, SignOut } from 'phosphor-react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -6,20 +6,19 @@ import { useNavigation } from '@react-navigation/native';
 import Logo from '../assets/logo_secondary.svg';
 
 import { Filter } from '../components/Filter';
-import { Order, OrderProps } from '../components/Order';
+import { Order } from '../components/Order';
 import { Button } from '../components/Button';
+import { Loading } from '../components/Loading';
+
 import { useAuth } from '../hooks/useAuth';
+import { useOrder } from '../hooks/useOrder';
 
 export function HomeView() {
   const navigation = useNavigation();
   const { colors } = useTheme();
-  const { logout, loading } = useAuth();
+  const { logout, loading: authLoading } = useAuth();
+  const { orderListener, orders, loading: ordersLoading } = useOrder();
   const [selectedFilter, setSelectedFilter] = useState<'open' | 'closed'>('open');
-  const [orders, setOrders] = useState<OrderProps[]>([
-    { id: '123', patrimony: '9012312', when: new Date().toISOString(), status: 'open' },
-    { id: '321', patrimony: '9012312', when: new Date().toISOString(), status: 'closed' },
-    { id: '213', patrimony: '9012312', when: new Date().toISOString(), status: 'open' },
-  ]);
 
   function handleSelectOpenFilter() {
     return setSelectedFilter('open');
@@ -40,6 +39,12 @@ export function HomeView() {
   async function handleLogout() {
     return await logout();
   }
+
+  useEffect(() => {
+    const subscriber = orderListener(selectedFilter);
+
+    return subscriber;
+  }, [selectedFilter]);
 
   return (
     <VStack flex={1} pb={6} bg="gray.700">
@@ -95,33 +100,36 @@ export function HomeView() {
             onPress={handleSelectClosedFilter}
           />
         </HStack>
-
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 100 }}
-          data={orders}
-          keyExtractor={(order) => order.id}
-          renderItem={({ item }) => (
-            <Order data={item} onPress={() => handleOpenDetailsView(item.id)} />
-          )}
-          ListEmptyComponent={() => (
-            <Center>
-              <ChatTeardropText color={colors.gray[300]} size={40} />
-              <Text
-                color="gray.300"
-                fontSize="xl"
-                mt={6}
-                textAlign="center"
-              >
-                Você não possui{'\n'}solicitações {selectedFilter === 'open' ? 'em andamento' : 'finalizadas'}
-              </Text>
-            </Center>
-          )}
-        />
+        {ordersLoading ? (
+          <Loading />
+        ) : (
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 100 }}
+            data={orders}
+            keyExtractor={(order) => order.id}
+            renderItem={({ item }) => (
+              <Order data={item} onPress={() => handleOpenDetailsView(item.id)} />
+            )}
+            ListEmptyComponent={() => (
+              <Center>
+                <ChatTeardropText color={colors.gray[300]} size={40} />
+                <Text
+                  color="gray.300"
+                  fontSize="xl"
+                  mt={6}
+                  textAlign="center"
+                >
+                  Você não possui{'\n'}solicitações {selectedFilter === 'open' ? 'em andamento' : 'finalizadas'}
+                </Text>
+              </Center>
+            )}
+          />
+        )}
         <Button
           title="Nova solicitação"
           onPress={handleNewOrder}
-          isLoading={loading}
+          isLoading={authLoading || ordersLoading}
         />
       </VStack>
     </VStack>
