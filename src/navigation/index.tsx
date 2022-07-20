@@ -1,13 +1,18 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { SignIn } from 'phosphor-react-native';
 
 import { AppNavigator } from './app.routes';
+import { SignInView } from '../views/SignInView';
+import { useAuth } from '../hooks/useAuth';
+import { Loading } from '../components/Loading';
 
 export function CoreNavigator() {
+  const { loading, user } = useAuth();
+
+  if (loading) return <Loading />
+
   return (
     <NavigationContainer>
-      <AppNavigator />
-      {/* <SignIn /> */}
+      {user ? <AppNavigator /> : <SignInView />}
     </NavigationContainer>
   );
 }

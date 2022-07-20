@@ -13,7 +13,7 @@ export function TextField({ control, name, ...rest }: TextFieldProps) {
       name={name}
       render={({ field: { onChange, value } }) => (
         <Input
-          onChange={onChange}
+          onChangeText={onChange}
           value={value}
           bg="gray.700"
           height={14}

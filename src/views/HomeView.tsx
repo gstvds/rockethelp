@@ -8,10 +8,12 @@ import Logo from '../assets/logo_secondary.svg';
 import { Filter } from '../components/Filter';
 import { Order, OrderProps } from '../components/Order';
 import { Button } from '../components/Button';
+import { useAuth } from '../hooks/useAuth';
 
 export function HomeView() {
-  const { colors } = useTheme();
   const navigation = useNavigation();
+  const { colors } = useTheme();
+  const { logout, loading } = useAuth();
   const [selectedFilter, setSelectedFilter] = useState<'open' | 'closed'>('open');
   const [orders, setOrders] = useState<OrderProps[]>([
     { id: '123', patrimony: '9012312', when: new Date().toISOString(), status: 'open' },
@@ -35,6 +37,10 @@ export function HomeView() {
     return navigation.navigate('DetailsView', { orderId });
   }
 
+  async function handleLogout() {
+    return await logout();
+  }
+
   return (
     <VStack flex={1} pb={6} bg="gray.700">
       <HStack
@@ -54,6 +60,7 @@ export function HomeView() {
               color={colors.gray[300]}
             />
           }
+          onPress={handleLogout}
         />
       </HStack>
       <VStack
@@ -111,7 +118,11 @@ export function HomeView() {
             </Center>
           )}
         />
-        <Button title="Nova solicitação" onPress={handleNewOrder} />
+        <Button
+          title="Nova solicitação"
+          onPress={handleNewOrder}
+          isLoading={loading}
+        />
       </VStack>
     </VStack>
   );

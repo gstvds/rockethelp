@@ -1,11 +1,15 @@
-import { Heading, Icon, useTheme, VStack } from "native-base";
+import { useState } from 'react';
+import { Heading, Icon, useTheme, VStack } from 'native-base';
 import { Envelope, Key } from 'phosphor-react-native';
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
+import auth from '@react-native-firebase/auth';
 
 import Logo from '../assets/logo_primary.svg';
 
-import { TextField } from "../components/TextField";
+import { TextField } from '../components/TextField';
 import { Button } from '../components/Button';
+import { Alert } from 'react-native';
+import { useAuth } from '../hooks/useAuth';
 
 interface SignInTextFieldData {
   email: string;
@@ -15,9 +19,18 @@ interface SignInTextFieldData {
 export function SignInView() {
   const { colors } = useTheme();
   const { handleSubmit, control } = useForm();
+  const { login, loading } = useAuth();
 
-  function handleSignIn({ email, password }: SignInTextFieldData) {
-    console.log({ email, password });
+  async function handleSignIn({ email, password }: SignInTextFieldData) {
+    if (!email || !password) {
+      return Alert.alert('Entrar', 'O email e a senha precisam ser informados');
+    }
+
+    try {
+      return await login({ email, password });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -33,6 +46,9 @@ export function SignInView() {
         mb={4}
         placeholder="E-mail"
         keyboardType="email-address"
+        autoCapitalize="none"
+        autoComplete="email"
+        textContentType="emailAddress"
         InputLeftElement={<Icon as={<Envelope color={colors.gray[300]} />} ml={4} />}
       />
       <TextField
@@ -41,10 +57,17 @@ export function SignInView() {
         mb={8}
         placeholder="Senha"
         type="password"
+        autoComplete="password"
+        textContentType="password"
         InputLeftElement={<Icon as={<Key color={colors.gray[300]} />} ml={4} />}
       />
 
-      <Button title="Entrar" w="full" onPress={handleSubmit(handleSignIn)} />
+      <Button
+        title="Entrar"
+        w="full"
+        onPress={handleSubmit(handleSignIn)}
+        isLoading={loading}
+      />
     </VStack>
   );
 }
