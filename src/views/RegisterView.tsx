@@ -42,7 +42,7 @@ export function RegisterView() {
   return (
     <VStack
       flex={1}
-      p={6}
+      px={6}
       bg="gray.600"
     >
       <Header title="Nova solicitação" />

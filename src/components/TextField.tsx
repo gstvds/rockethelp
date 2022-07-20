@@ -6,7 +6,7 @@ interface TextFieldProps extends IInputProps {
   // control: Control
   control: any;
   name: string;
-  error: string;
+  error?: string;
 }
 
 export function TextField({ control, name, error, ...rest }: TextFieldProps) {

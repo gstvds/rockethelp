@@ -1,11 +1,13 @@
 import { createContext, ReactNode, useContext, useState } from 'react';
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
 import { formatFirestoreDate } from '../utils/formatFirestoreDate';
 
 interface OrderContextProps {
   registerOrder: (payload: RegisterOrderProps) => Promise<void>;
   orderListener: (status: OrderStatus) => (() => void);
+  getOrder: (orderId: string) => Promise<OrderDetailsProps | undefined>;
+  closeOrder: (payload: CloseOrderProps) => Promise<void>;
   orders: OrderProps[];
   loading: boolean;
 }
@@ -21,6 +23,11 @@ interface RegisterOrderProps {
   description: string;
 }
 
+interface CloseOrderProps {
+  orderId: string;
+  solution: string;
+}
+
 type OrderStatus = 'open' | 'closed';
 
 export interface OrderProps {
@@ -28,6 +35,21 @@ export interface OrderProps {
   patrimony: string;
   when: string;
   status: OrderStatus;
+}
+
+export interface OrderDetailsProps extends OrderProps {
+  description: string;
+  solution: string | null;
+  closed: string | null;
+}
+
+interface FirestoreOrder {
+  patrimony: string;
+  description: string;
+  status: OrderStatus;
+  created_at: FirebaseFirestoreTypes.Timestamp;
+  solution?: string;
+  closed_at?: FirebaseFirestoreTypes.Timestamp;
 }
 
 export function OrderProvider({ children }: OrderProviderProps): JSX.Element {
@@ -63,7 +85,7 @@ export function OrderProvider({ children }: OrderProviderProps): JSX.Element {
             patrimony,
             description,
             status,
-            when: formatFirestoreDate(created_at),
+            when: created_at && formatFirestoreDate(created_at),
           };
         });
         setOrders(parsedOrder);
@@ -78,8 +100,49 @@ export function OrderProvider({ children }: OrderProviderProps): JSX.Element {
     }
   }
 
+  async function getOrder(orderId: string): Promise<OrderDetailsProps | undefined> {
+    setLoading(true);
+    try {
+      const dbOrder = await firestore().collection<FirestoreOrder>('orders').doc(orderId).get();
+      if (dbOrder.exists) {
+        const { patrimony, description, status, solution, created_at, closed_at } = dbOrder.data();
+
+        return {
+          id: orderId,
+          patrimony,
+          description,
+          status,
+          when: created_at && formatFirestoreDate(created_at),
+          solution: solution || null,
+          closed: closed_at ? formatFirestoreDate(closed_at) : null,
+        } as OrderDetailsProps
+      }
+    } catch (error) {
+      console.log(error);
+      throw new Error('get_failed');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function closeOrder({ orderId, solution }: CloseOrderProps): Promise<void> {
+    setLoading(true);
+    try {
+      await firestore().collection('orders').doc(orderId).update({
+        status: 'closed',
+        solution,
+        closed_at: firestore.FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      console.log(error);
+      throw new Error('update_failed');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <OrderContext.Provider value={{ registerOrder, orderListener, orders, loading }}>
+    <OrderContext.Provider value={{ registerOrder, orderListener, getOrder, closeOrder, orders, loading }}>
       {children}
     </OrderContext.Provider>
   );
