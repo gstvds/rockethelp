@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, HStack, ScrollView, Text, useTheme, VStack } from 'native-base';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { CircleWavyCheck, Clipboard, DesktopTower, Hourglass } from 'phosphor-react-native';
+import { CircleWavyCheck, Clipboard, ClipboardText, DesktopTower, Hourglass } from 'phosphor-react-native';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -98,16 +98,16 @@ export function DetailsView() {
             title="equipamento"
             description={`Patrimônio ${order.patrimony}`}
             icon={DesktopTower}
-            footer={order.when}
           />
           <CardDetails
             title="descrição do problema"
             description={order.description}
             icon={Clipboard}
+            footer={`Registrado em ${order.when}`}
           />
           <CardDetails
             title="solução"
-            icon={CircleWavyCheck}
+            icon={ClipboardText}
             description={order.solution}
             footer={order.closed && `Encerrado em ${order.closed}`}
           >

@@ -45,12 +45,12 @@ export function RegisterView() {
       px={6}
       bg="gray.600"
     >
-      <Header title="Nova solicitação" />
+      <Header title="Solicitação" />
       <TextField
         control={control}
         error={errors.patrimony?.message}
         name="patrimony"
-        placeholder="Número do patrimônio"
+        placeholder="Número do Patrimônio"
         mt={4}
       />
       <TextField
@@ -58,7 +58,7 @@ export function RegisterView() {
         error={errors.description?.message}
         multiline
         name="description"
-        placeholder="Descrição do problema"
+        placeholder="Descrição do Problema"
         flex={1}
         mt={5}
         textAlignVertical="top"
