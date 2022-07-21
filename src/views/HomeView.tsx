@@ -47,7 +47,7 @@ export function HomeView() {
   }, [selectedFilter]);
 
   return (
-    <VStack flex={1} pb={6} bg="gray.700">
+    <VStack flex={1} bg="gray.700">
       <HStack
         w="full"
         justifyContent="space-between"
@@ -130,6 +130,7 @@ export function HomeView() {
           title="Nova solicitação"
           onPress={handleNewOrder}
           isLoading={authLoading || ordersLoading}
+          mb={10}
         />
       </VStack>
     </VStack>

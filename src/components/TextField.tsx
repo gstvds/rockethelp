@@ -1,4 +1,4 @@
-import { Input, IInputProps, Text } from "native-base";
+import { Input, IInputProps, Text, FormControl, useTheme } from "native-base";
 import { Controller } from 'react-hook-form';
 
 interface TextFieldProps extends IInputProps {
@@ -7,15 +7,18 @@ interface TextFieldProps extends IInputProps {
   control: any;
   name: string;
   error?: string;
+  full?: boolean;
 }
 
-export function TextField({ control, name, error, ...rest }: TextFieldProps) {
+export function TextField({ control, name, error, full, ...rest }: TextFieldProps) {
+  const { fontSizes } = useTheme();
+
   return (
-    <>
-      <Controller
-        control={control}
-        name={name}
-        render={({ field: { onChange, value } }) => (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field: { onChange, value } }) => (
+        <FormControl isInvalid={!!error} flex={full ? 1 : null}>
           <Input
             onChangeText={onChange}
             value={value}
@@ -30,22 +33,24 @@ export function TextField({ control, name, error, ...rest }: TextFieldProps) {
             placeholderTextColor="gray.300"
             _focus={{
               borderWidth: 1,
-              borderColor: 'green.500',
+              borderColor: !!error ? 'error.600' : 'green.500',
               bg: 'gray.700',
+            }}
+            _invalid={{
+              borderWidth: 1,
+              borderColor: 'error.600',
             }}
             {...rest}
           />
-        )}
-      />
-      {!!error && (
-        <Text
-          fontSize="md"
-          mt={2}
-          color="red.300"
-        >
-          {error}
-        </Text>
+          <FormControl.ErrorMessage
+            _text={{
+              fontSize: fontSizes["md"]
+            }}
+          >
+            {error}
+          </FormControl.ErrorMessage>
+        </FormControl>
       )}
-    </>
+    />
   )
 }

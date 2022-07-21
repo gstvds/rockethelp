@@ -60,7 +60,7 @@ export function SignInView() {
           autoCapitalize="none"
           autoComplete="email"
           textContentType="emailAddress"
-          InputLeftElement={<Icon as={<Envelope color={!!errors.email?.message ? colors.red[300] : colors.gray[300]} />} ml={4} />}
+          InputLeftElement={<Icon as={<Envelope color={!!errors.email?.message ? colors.error[600] : colors.gray[300]} />} ml={4} />}
         />
         <TextField
           control={control}
@@ -70,7 +70,8 @@ export function SignInView() {
           type="password"
           autoComplete="password"
           textContentType="password"
-          InputLeftElement={<Icon as={<Key color={!!errors.password?.message ? colors.red[300] : colors.gray[300]} />} ml={4} />}
+          onSubmitEditing={handleSubmit(handleSignIn)}
+          InputLeftElement={<Icon as={<Key color={!!errors.password?.message ? colors.error[600] : colors.gray[300]} />} ml={4} />}
         />
       </VStack>
       <Button

@@ -115,6 +115,7 @@ export function DetailsView() {
               <TextField
                 multiline
                 control={control}
+                error={errors.solution?.message}
                 name="solution"
                 h={24}
                 placeholder="Descrição da solução"
@@ -128,6 +129,7 @@ export function DetailsView() {
             isLoading={ordersLoading}
             title="Encerrar solicitação"
             m={5}
+            mb={10}
             onPress={handleSubmit(handleCloseOrder)}
           />
         )}

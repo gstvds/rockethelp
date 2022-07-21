@@ -54,6 +54,7 @@ export function RegisterView() {
         mt={4}
       />
       <TextField
+        full
         control={control}
         error={errors.description?.message}
         multiline
@@ -63,7 +64,7 @@ export function RegisterView() {
         mt={5}
         textAlignVertical="top"
       />
-      <Button title="Cadastrar" mt={5} onPress={handleSubmit(handleRegisterOrder)} isLoading={loading} />
+      <Button title="Cadastrar" mt={5} mb={10} onPress={handleSubmit(handleRegisterOrder)} isLoading={loading} />
     </VStack>
   );
 }
